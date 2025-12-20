@@ -23,17 +23,15 @@ pipeline {
 
     post {
         always {
-            // ✅ JUnit Test Results
             junit '**/target/surefire-reports/*.xml'
 
-            // ✅ HTML Report
             publishHTML(target: [
-                allowMissing: true,
+                allowMissing: false,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
-                reportDir: 'test-output',
-                reportFiles: 'index.html',
-                reportName: 'Automation HTML Report'
+                reportDir: 'extent-report',
+                reportFiles: 'ExtentReport.html',
+                reportName: 'Extent Automation Report'
             ])
         }
     }
