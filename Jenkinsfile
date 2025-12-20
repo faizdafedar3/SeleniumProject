@@ -23,7 +23,18 @@ pipeline {
 
     post {
         always {
+            // ✅ JUnit Test Results
             junit '**/target/surefire-reports/*.xml'
+
+            // ✅ HTML Report
+            publishHTML(target: [
+                allowMissing: false,
+                alwaysLinkToLastBuild: true,
+                keepAll: true,
+                reportDir: 'test-output',
+                reportFiles: 'index.html',
+                reportName: 'Automation HTML Report'
+            ])
         }
     }
 }
