@@ -21,7 +21,6 @@ public class LoginTest extends BaseTest {
     @Test(dataProvider = "loginData")
     public void loginTest(String username, String password, String expectedResult) {
 
-        // Create Extent test for each data set
         test = extent.createTest(
                 "Login Test - User: " + username + " | Expected: " + expectedResult
         );
@@ -34,27 +33,14 @@ public class LoginTest extends BaseTest {
 
         if (expectedResult.equals("SUCCESS")) {
 
-            test.info("Validating successful login");
-            Assert.assertTrue(
-                    loginPage.isLoginSuccessful(),
-                    "Login should succeed"
-            );
+            Assert.assertTrue(loginPage.isLoginSuccessful());
             test.pass("Login successful as expected");
 
         } else {
 
-            test.info("Validating error message");
-            Assert.assertTrue(
-                    loginPage.isErrorDisplayed(),
-                    "Error message should be shown"
-            );
-            test.pass("Login failed as expected (error displayed)");
+            Assert.assertTrue(loginPage.isErrorDisplayed());
+            test.pass("Login failed as expected");
         }
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-        DriverFactory.quitDriver();
     }
 
     @DataProvider(name = "loginData")
@@ -62,7 +48,7 @@ public class LoginTest extends BaseTest {
         return new Object[][]{
                 {"standard_user", "secret_sauce", "SUCCESS"},
                 {"performance_glitch_user", "secret_sauce", "SUCCESS"},
-                {"problem_use", "secret_sauce", "SUCCESS"},
+                {"problem_use", "secret_sauce", "SUCCESS"}, // ❌ intentional failure
                 {"locked_out_user", "secret_sauce", "FAIL"},
                 {"wrong_user", "wrong_pass", "FAIL"}
         };

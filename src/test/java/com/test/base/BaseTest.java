@@ -1,6 +1,5 @@
 package com.test.base;
 
-import org.openqa.selenium.WebDriver;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
@@ -23,24 +22,23 @@ public class BaseTest {
     }
 
     @AfterMethod(alwaysRun = true)
-    public void attachScreenshotOnFailure(ITestResult result) {
+    public void captureResult(ITestResult result) {
 
         if (result.getStatus() == ITestResult.FAILURE) {
-            try {
-                WebDriver driver = DriverFactory.getDriver();
-                String screenshotPath =
-                        ScreenshotUtil.captureScreenshot(driver, result.getName());
 
-                test.fail("Test Failed: " + result.getThrowable());
-                test.addScreenCaptureFromPath(screenshotPath);
+            String screenshotPath = ScreenshotUtil.takeScreenshot(
+                    DriverFactory.getDriver(),
+                    result.getName()
+            );
 
-            } catch (Exception e) {
-                test.fail("Screenshot capture failed: " + e.getMessage());
-            }
+            test.fail(result.getThrowable());
+            test.addScreenCaptureFromPath(screenshotPath);
         }
+
+        DriverFactory.quitDriver();
     }
 
-    @AfterSuite(alwaysRun = true)
+    @AfterSuite
     public void tearDownReport() {
         extent.flush();
     }
