@@ -24,15 +24,25 @@ public class BaseTest {
     @AfterMethod(alwaysRun = true)
     public void captureResult(ITestResult result) {
 
+        String screenshotPath =
+                ScreenshotUtil.takeScreenshot(
+                        DriverFactory.getDriver(),
+                        result.getName()
+                );
+
         if (result.getStatus() == ITestResult.FAILURE) {
 
-            String screenshotPath = ScreenshotUtil.takeScreenshot(
-                    DriverFactory.getDriver(),
-                    result.getName()
-            );
-
-            test.fail(result.getThrowable());
+            test.fail("Test Failed: " + result.getThrowable());
             test.addScreenCaptureFromPath(screenshotPath);
+
+        } else if (result.getStatus() == ITestResult.SUCCESS) {
+
+            test.pass("Test Passed");
+            test.addScreenCaptureFromPath(screenshotPath);
+
+        } else if (result.getStatus() == ITestResult.SKIP) {
+
+            test.skip("Test Skipped: " + result.getThrowable());
         }
 
         DriverFactory.quitDriver();

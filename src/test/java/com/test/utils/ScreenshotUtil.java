@@ -1,7 +1,6 @@
 package com.test.utils;
 
 import java.io.File;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,29 +12,22 @@ import org.openqa.selenium.WebDriver;
 public class ScreenshotUtil {
 
     public static String takeScreenshot(WebDriver driver, String testName) {
-
-        String timestamp =
-                new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-
-        String screenshotDir =
-                System.getProperty("user.dir") + "/extent-report/screenshots/";
-
-        String screenshotPath =
-                screenshotDir + testName + "_" + timestamp + ".png";
-
         try {
-            File src = ((TakesScreenshot) driver)
-                    .getScreenshotAs(OutputType.FILE);
-
-            File dest = new File(screenshotPath);
+            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String screenshotDir = "extent-report/screenshots";
             new File(screenshotDir).mkdirs();
 
-            FileUtils.copyFile(src, dest);
+            String screenshotPath =
+                    screenshotDir + "/" + testName + "_" + timestamp + ".png";
 
-        } catch (IOException e) {
+            File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            FileUtils.copyFile(src, new File(screenshotPath));
+
+            return screenshotPath;
+
+        } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
-
-        return "screenshots/" + testName + "_" + timestamp + ".png";
     }
 }
