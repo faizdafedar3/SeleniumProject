@@ -28,7 +28,7 @@ pipeline {
 
             // ✅ HTML Report
             publishHTML(target: [
-                allowMissing: false,
+                allowMissing: true,
                 alwaysLinkToLastBuild: true,
                 keepAll: true,
                 reportDir: 'test-output',
