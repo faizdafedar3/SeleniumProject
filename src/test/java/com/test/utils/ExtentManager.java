@@ -8,40 +8,23 @@ public class ExtentManager {
     private static ExtentReports extent;
 
     public static ExtentReports getExtent() {
-
         if (extent == null) {
 
-            ExtentSparkReporter spark =
+            ExtentSparkReporter reporter =
                     new ExtentSparkReporter("extent-report/ExtentReport.html");
 
-            spark.config().setReportName("Selenium Automation Report");
-            spark.config().setDocumentTitle("Automation Test Results");
+            reporter.config().setReportName("Selenium Automation Report");
+            reporter.config().setDocumentTitle("Test Execution Report");
 
             extent = new ExtentReports();
-            extent.attachReporter(spark);
+            extent.attachReporter(reporter);
 
-            // 🌐 System & Environment Info
-            extent.setSystemInfo("OS", System.getProperty("os.name"));
-            extent.setSystemInfo("OS Version", System.getProperty("os.version"));
-            extent.setSystemInfo("Java Version", System.getProperty("java.version"));
-            extent.setSystemInfo("User", System.getProperty("user.name"));
-
-            // 🌐 Browser (static for now)
+            extent.setSystemInfo("OS", "Windows 11");
+            extent.setSystemInfo("Java", "21");
             extent.setSystemInfo("Browser", "Chrome");
+            extent.setSystemInfo("Executed By", "Jenkins");
 
-            // 🧱 Jenkins Info (works only in Jenkins)
-            String jobName = System.getenv("JOB_NAME");
-            String buildNumber = System.getenv("BUILD_NUMBER");
-
-            if (jobName != null) {
-                extent.setSystemInfo("Jenkins Job", jobName);
-            }
-
-            if (buildNumber != null) {
-                extent.setSystemInfo("Jenkins Build", buildNumber);
-            }
         }
-
         return extent;
     }
 }

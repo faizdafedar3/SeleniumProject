@@ -1,11 +1,13 @@
 package com.test.tests;
 
+import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
 import com.test.base.BaseTest;
 import com.test.pages.LoginPage;
 import com.test.utils.DriverFactory;
-
-import org.testng.Assert;
-import org.testng.annotations.*;
 
 public class LoginTest extends BaseTest {
 
@@ -19,36 +21,30 @@ public class LoginTest extends BaseTest {
     }
 
     @Test(dataProvider = "loginData")
-    public void loginTest(String username, String password, String expectedResult) {
+    public void loginTest(String username, String password, String expected) {
 
-        test = extent.createTest(
-                "Login Test - User: " + username + " | Expected: " + expectedResult
-        );
+        createTest("Login Test - " + username + " | Expected: " + expected);
 
-        test.info("Browser launched");
-        test.info("Navigated to SauceDemo login page");
-        test.info("Attempting login with username: " + username);
+        getTest().info("Browser launched");
+        getTest().info("Navigated to login page");
 
         loginPage.login(username, password);
 
-        if (expectedResult.equals("SUCCESS")) {
-
+        if (expected.equals("SUCCESS")) {
             Assert.assertTrue(loginPage.isLoginSuccessful());
-            test.pass("Login successful as expected");
-
+            getTest().pass("Login successful");
         } else {
-
             Assert.assertTrue(loginPage.isErrorDisplayed());
-            test.pass("Login failed as expected");
+            getTest().pass("Login failed as expected");
         }
     }
 
-    @DataProvider(name = "loginData")
+    @DataProvider
     public Object[][] loginData() {
         return new Object[][]{
                 {"standard_user", "secret_sauce", "SUCCESS"},
                 {"performance_glitch_user", "secret_sauce", "SUCCESS"},
-                {"problem_user", "secret_sauce", "SUCCESS"}, // ❌ intentional failure
+                {"problem_user", "secret_sauce", "SUCCESS"},
                 {"locked_out_user", "secret_sauce", "FAIL"},
                 {"wrong_user", "wrong_pass", "FAIL"}
         };

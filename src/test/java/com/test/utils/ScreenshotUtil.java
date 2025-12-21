@@ -12,15 +12,20 @@ import org.openqa.selenium.WebDriver;
 public class ScreenshotUtil {
 
     public static String takeScreenshot(WebDriver driver, String testName) {
+
         try {
-            String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+                    .format(new Date());
+
             String screenshotDir = "extent-report/screenshots";
             new File(screenshotDir).mkdirs();
 
             String screenshotPath =
-                    screenshotDir + "/" + testName + "_" + timestamp + ".png";
+                    screenshotDir + "/" + testName + "_" + timeStamp + ".png";
 
-            File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+            File src = ((TakesScreenshot) driver)
+                    .getScreenshotAs(OutputType.FILE);
+
             FileUtils.copyFile(src, new File(screenshotPath));
 
             return screenshotPath;
