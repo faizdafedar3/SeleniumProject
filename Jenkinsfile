@@ -7,19 +7,16 @@ pipeline {
     }
 
     stages {
-
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
-                git branch: 'main',
-                    url: 'https://github.com/faizdafedar3/SeleniumProject.git'
+                git url: 'https://github.com/faizdafedar3/SeleniumProject.git',
+                    branch: 'main'
             }
         }
 
         stage('Build & Test') {
             steps {
-                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
-                    bat 'mvn clean test'
-                }
+                bat 'mvn clean test'
             }
         }
     }
