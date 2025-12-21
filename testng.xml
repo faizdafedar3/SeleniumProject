@@ -1,4 +1,4 @@
-<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<!--<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
 <suite name="SauceDemo Suite">
     <test name="Login Tests">
         <classes>
@@ -6,3 +6,17 @@
         </classes>
     </test>
 </suite>
+-->
+
+
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="TestSuite" parallel="methods" thread-count="5">
+
+    <test name="Login Tests">
+        <classes>
+            <class name="com.test.tests.LoginTest"/>
+        </classes>
+    </test>
+
+</suite>
+
