@@ -14,35 +14,34 @@ import com.test.utils.ScreenshotUtil;
 public class BaseTest {
 
     protected static ExtentReports extent;
-    protected ExtentTest test;
+    private static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
 
     @BeforeMethod
-    public void setUpReport() {
+    public void setupExtent() {
         extent = ExtentManager.getExtent();
+    }
+
+    protected void createTest(String testName) {
+        extentTest.set(extent.createTest(testName));
+    }
+
+    protected ExtentTest getTest() {
+        return extentTest.get();
     }
 
     @AfterMethod(alwaysRun = true)
     public void captureResult(ITestResult result) {
 
-        String screenshotPath =
-                ScreenshotUtil.takeScreenshot(
-                        DriverFactory.getDriver(),
-                        result.getName()
-                );
-
+        // 📸 Screenshot ONLY on FAILURE
         if (result.getStatus() == ITestResult.FAILURE) {
 
-            test.fail("Test Failed: " + result.getThrowable());
-            test.addScreenCaptureFromPath(screenshotPath);
+            String screenshotPath = ScreenshotUtil.takeScreenshot(
+                    DriverFactory.getDriver(),
+                    result.getMethod().getMethodName()
+            );
 
-        } else if (result.getStatus() == ITestResult.SUCCESS) {
-
-            test.pass("Test Passed");
-            test.addScreenCaptureFromPath(screenshotPath);
-
-        } else if (result.getStatus() == ITestResult.SKIP) {
-
-            test.skip("Test Skipped: " + result.getThrowable());
+            getTest().fail(result.getThrowable());
+            getTest().addScreenCaptureFromPath(screenshotPath);
         }
 
         DriverFactory.quitDriver();
