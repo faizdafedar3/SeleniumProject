@@ -1,4 +1,5 @@
 pipeline {
+
     agent any
 
     tools {
@@ -7,36 +8,36 @@ pipeline {
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/faizdafedar3/SeleniumProject.git', branch: 'main'
+                git url: 'https://github.com/faizdafedar3/SeleniumProject.git',
+                    branch: 'main'
             }
         }
 
-        stage('Parallel Execution') {
-            parallel {
-                stage('Batch-1') {
-                    steps {
-                        bat 'mvn clean test -Dgroups=batch1'
-                    }
-                }
-                stage('Batch-2') {
-                    steps {
-                        bat 'mvn clean test -Dgroups=batch2'
-                    }
-                }
-                stage('Batch-3') {
-                    steps {
-                        bat 'mvn clean test -Dgroups=batch3'
-                    }
-                }
+        stage('Build & Test') {
+            steps {
+                bat 'mvn clean test'
             }
         }
     }
 
     post {
+
         always {
             junit '**/target/surefire-reports/*.xml'
+
+            publishHTML(
+                target: [
+                    allowMissing          : false,
+                    alwaysLinkToLastBuild : true,
+                    keepAll               : true,
+                    reportDir             : 'extent-report',
+                    reportFiles           : 'ExtentReport.html',
+                    reportName            : 'Extent Automation Report'
+                ]
+            )
         }
     }
 }
