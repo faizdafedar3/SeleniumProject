@@ -44,7 +44,7 @@ public class LoginTest extends BaseTest {
         return new Object[][]{
                 {"standard_user", "secret_sauce", "SUCCESS"},
                 {"performance_glitch_user", "secret_sauce", "SUCCESS"},
-                {"problem_user", "secret_sauce", "SUCCESS"},
+                {"problem_use", "secret_sauce", "SUCCESS"},
                 {"locked_out_user", "secret_sauce", "FAIL"},
                 {"wrong_user", "wrong_pass", "FAIL"}
         };
