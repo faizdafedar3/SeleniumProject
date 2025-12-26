@@ -3,8 +3,8 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk21'
-        maven 'maven-3.9.1'
+        jdk 'jdk21'              // must match Jenkins → Tools → JDK name
+        maven 'maven-3.9.1'      // must match Jenkins → Tools → Maven name
     }
 
     options {
@@ -23,7 +23,20 @@ pipeline {
 
         stage('Build & Test') {
             steps {
-                bat 'mvn clean test'
+                bat '''
+                echo ===============================
+                echo SETTING JAVA_HOME EXPLICITLY
+                echo ===============================
+
+                set JAVA_HOME=C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.model.JDK\\jdk21
+                set PATH=%JAVA_HOME%\\bin;%PATH%
+
+                echo JAVA_HOME=%JAVA_HOME%
+                java -version
+                mvn -version
+
+                mvn clean test
+                '''
             }
         }
     }
