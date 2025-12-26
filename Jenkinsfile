@@ -3,16 +3,17 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'
-        jdk 'JDK'
+        jdk 'jdk21'            // must match Tools → JDK name
+        maven 'maven-3.9.1'    // must match Tools → Maven name
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/faizdafedar3/SeleniumProject.git',
-                    branch: 'main'
+                git branch: 'main',
+                    credentialsId: 'git',   // your SSH credential ID
+                    url: 'git@github.com:faizdafedar3/SeleniumProject.git'
             }
         }
 
@@ -24,13 +25,12 @@ pipeline {
     }
 
     post {
-
         always {
             junit '**/target/surefire-reports/*.xml'
 
             publishHTML(
                 target: [
-                    allowMissing          : false,
+                    allowMissing          : true,
                     alwaysLinkToLastBuild : true,
                     keepAll               : true,
                     reportDir             : 'extent-report',
