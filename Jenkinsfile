@@ -3,8 +3,12 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk21'            // must match Tools → JDK name
-        maven 'maven-3.9.1'    // must match Tools → Maven name
+        jdk 'jdk21'
+        maven 'maven-3.9.1'
+    }
+
+    options {
+        skipDefaultCheckout(true)
     }
 
     stages {
@@ -12,7 +16,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'git',   // your SSH credential ID
+                    credentialsId: 'github-ssh',
                     url: 'git@github.com:faizdafedar3/SeleniumProject.git'
             }
         }
