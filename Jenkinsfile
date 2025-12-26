@@ -2,11 +2,6 @@ pipeline {
 
     agent any
 
-    tools {
-        jdk 'jdk21'              // must match Jenkins → Tools → JDK name
-        maven 'maven-3.9.1'      // must match Jenkins → Tools → Maven name
-    }
-
     options {
         skipDefaultCheckout(true)
     }
@@ -25,17 +20,24 @@ pipeline {
             steps {
                 bat '''
                 echo ===============================
-                echo SETTING JAVA_HOME EXPLICITLY
+                echo FORCING JAVA & MAVEN (WINDOWS FIX)
                 echo ===============================
 
+                REM --- Force correct Java ---
                 set JAVA_HOME=C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.model.JDK\\jdk21
-                set PATH=%JAVA_HOME%\\bin;%PATH%
+                set JAVA_EXE=%JAVA_HOME%\\bin\\java.exe
+
+                REM --- Force Maven installed by Jenkins ---
+                set MAVEN_HOME=C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.tasks.Maven_MavenInstallation\\maven-3.9.1
+                set MVN_CMD=%MAVEN_HOME%\\bin\\mvn.cmd
 
                 echo JAVA_HOME=%JAVA_HOME%
-                java -version
-                mvn -version
+                %JAVA_EXE% -version
 
-                mvn clean test
+                echo MAVEN_HOME=%MAVEN_HOME%
+                %MVN_CMD% -version
+
+                %MVN_CMD% clean test
                 '''
             }
         }
