@@ -9,8 +9,9 @@
 -->
 
 
-<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="TestSuite" parallel="methods" thread-count="5">
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+
+<suite name="SauceDemo Suite">
 
     <test name="Login Tests">
         <classes>
@@ -19,4 +20,3 @@
     </test>
 
 </suite>
-

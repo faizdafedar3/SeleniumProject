@@ -8,6 +8,7 @@ public class ExtentManager {
     private static ExtentReports extent;
 
     public static ExtentReports getExtent() {
+
         if (extent == null) {
 
             ExtentSparkReporter reporter =
@@ -23,8 +24,8 @@ public class ExtentManager {
             extent.setSystemInfo("Java", "21");
             extent.setSystemInfo("Browser", "Chrome");
             extent.setSystemInfo("Executed By", "Jenkins");
-
         }
+
         return extent;
     }
 }

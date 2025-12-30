@@ -1,70 +1,58 @@
-/*
- * package com.test.tests;
- * 
- * import org.testng.Assert; import org.testng.annotations.BeforeMethod; import
- * org.testng.annotations.Test;
- * 
- * import com.test.dataprovider.TestDataProvider; import
- * com.test.pages.LoginPage; import com.test.utils.DriverFactory;
- * 
- * public class LoginTest {
- * 
- * private LoginPage loginPage;
- * 
- * @BeforeMethod public void setUp() { DriverFactory.setDriver();
- * DriverFactory.getDriver().get("https://www.saucedemo.com/"); loginPage = new
- * LoginPage(DriverFactory.getDriver()); }
- * 
- * @Test(dataProvider = "loginData", dataProviderClass = TestDataProvider.class)
- * public void loginTest(String username, String password, String expected) {
- * 
- * loginPage.login(username, password);
- * 
- * if (expected.equalsIgnoreCase("SUCCESS")) { Assert.assertTrue(
- * loginPage.isLoginSuccessful(), "Expected login to be SUCCESS" ); } else {
- * Assert.assertFalse( loginPage.isLoginSuccessful(), "Expected login to FAIL"
- * ); } } }
- */
-
-
 package com.test.tests;
 
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
+import com.test.base.BaseTest;
 import com.test.pages.LoginPage;
 import com.test.utils.DriverFactory;
-import com.test.dataprovider.TestDataProvider;
 
-public class LoginTest {
+public class LoginTest extends BaseTest {
+
+    private LoginPage loginPage;
 
     @BeforeMethod
     public void setUp() {
-        DriverFactory.initDriver();
+        DriverFactory.setDriver();
+        DriverFactory.getDriver().get("https://www.saucedemo.com/");
+        loginPage = new LoginPage(DriverFactory.getDriver());
     }
 
-    @Test(dataProvider = "loginData", dataProviderClass = TestDataProvider.class)
-    public void loginTest(String username, String password, String expected) {
+    @Test(dataProvider = "loginData")
+    public void loginTest(String username, String password, String expectedResult) {
 
-        System.out.println("User: " + username + " | Thread ID: " + Thread.currentThread().getId());
+        createTest("Login Test - " + username + " | Expected: " + expectedResult);
 
-        LoginPage loginPage = new LoginPage(DriverFactory.getDriver());
+        getTest().info("Browser launched");
+        getTest().info("Navigated to SauceDemo login page");
+
         loginPage.login(username, password);
 
-        if (expected.equalsIgnoreCase("SUCCESS")) {
-            Assert.assertTrue(loginPage.isLoginSuccessful(),
-                    "Expected login to be SUCCESS");
+        if ("SUCCESS".equalsIgnoreCase(expectedResult)) {
+            Assert.assertTrue(
+                    loginPage.isLoginSuccessful(),
+                    "Login should be successful"
+            );
+            getTest().pass("Login successful");
         } else {
-            Assert.assertTrue(loginPage.isLoginFailed(),
-                    "Expected login to FAIL");
+            Assert.assertTrue(
+                    loginPage.isErrorDisplayed(),
+                    "Error message should be displayed"
+            );
+            getTest().pass("Login failed as expected");
         }
     }
 
-    @AfterMethod(alwaysRun = true)
-    public void tearDown() {
-        DriverFactory.quitDriver();
+    @DataProvider(name = "loginData")
+    public Object[][] loginData() {
+        return new Object[][]{
+                {"standard_user", "secret_sauce", "SUCCESS"},
+                {"performance_glitch_user", "secret_sauce", "SUCCESS"},
+                {"problem_user", "secret_sauce", "SUCCESS"},
+                {"locked_out_user", "secret_sauce", "FAIL"},
+                {"wrong_user", "wrong_pass", "FAIL"}
+        };
     }
 }
-

@@ -15,6 +15,10 @@ public class BaseTest {
     protected static ExtentReports extent;
     protected static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
 
+    static {
+        extent = ExtentManager.getExtent();
+    }
+
     protected void createTest(String testName) {
         extentTest.set(extent.createTest(testName));
     }
@@ -43,9 +47,5 @@ public class BaseTest {
     @AfterSuite
     public void tearDownReport() {
         extent.flush();
-    }
-
-    static {
-        extent = ExtentManager.getExtent();
     }
 }
