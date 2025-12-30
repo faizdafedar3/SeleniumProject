@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk21'
         maven 'maven-3.9.1'
+        jdk 'jdk21'
     }
 
     stages {
@@ -14,15 +14,22 @@ pipeline {
             }
         }
 
-        stage('Verify Tools') {
+        stage('Fix JAVA_HOME (Windows Jenkins bug)') {
             steps {
-                script {
-                    def jdkHome = tool 'jdk21'
-                    env.JAVA_HOME = jdkHome
-                    env.PATH = "${jdkHome}\\bin;${env.PATH}"
-                }
                 bat '''
-                echo JAVA_HOME=%JAVA_HOME%
+                echo Original JAVA_HOME=%JAVA_HOME%
+
+                REM Find actual JDK directory (jdk-*)
+                for /d %%i in ("%JAVA_HOME%\\jdk-*") do (
+                    set REAL_JAVA_HOME=%%i
+                )
+
+                echo REAL_JAVA_HOME=%REAL_JAVA_HOME%
+
+                setx JAVA_HOME "%REAL_JAVA_HOME%" /M
+                set PATH=%REAL_JAVA_HOME%\\bin;%PATH%
+
+                echo Fixed JAVA_HOME=%JAVA_HOME%
                 java -version
                 mvn -version
                 '''
