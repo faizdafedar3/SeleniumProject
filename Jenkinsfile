@@ -2,8 +2,14 @@ pipeline {
     agent any
 
     tools {
-        jdk 'jdk21'
         maven 'maven-3.9.1'
+        jdk 'jdk21'
+    }
+
+    environment {
+        // Fix for Windows + Jenkins JDK auto-install
+        JAVA_HOME = "${tool 'jdk21'}\\jdk-21+35"
+        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
     }
 
     stages {
