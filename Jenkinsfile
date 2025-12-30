@@ -3,7 +3,11 @@ pipeline {
 
     tools {
         maven 'maven-3.9.1'
-        jdk 'jdk21'
+    }
+
+    environment {
+        JAVA_HOME = 'C:\\Program Files\\Eclipse Adoptium\\jdk-21.0.9.10-hotspot'
+        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
     }
 
     stages {
@@ -14,22 +18,10 @@ pipeline {
             }
         }
 
-        stage('Fix JAVA_HOME (Windows Jenkins bug)') {
+        stage('Verify Java & Maven') {
             steps {
                 bat '''
-                echo Original JAVA_HOME=%JAVA_HOME%
-
-                REM Find actual JDK directory (jdk-*)
-                for /d %%i in ("%JAVA_HOME%\\jdk-*") do (
-                    set REAL_JAVA_HOME=%%i
-                )
-
-                echo REAL_JAVA_HOME=%REAL_JAVA_HOME%
-
-                setx JAVA_HOME "%REAL_JAVA_HOME%" /M
-                set PATH=%REAL_JAVA_HOME%\\bin;%PATH%
-
-                echo Fixed JAVA_HOME=%JAVA_HOME%
+                echo JAVA_HOME=%JAVA_HOME%
                 java -version
                 mvn -version
                 '''
