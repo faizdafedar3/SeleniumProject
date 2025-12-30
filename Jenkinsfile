@@ -2,13 +2,8 @@ pipeline {
     agent any
 
     tools {
+        jdk 'jdk21'
         maven 'maven-3.9.1'
-    }
-
-    environment {
-        // HARD FIX for Windows Jenkins JDK structure
-        JAVA_HOME = 'C:\\ProgramData\\Jenkins\\.jenkins\\tools\\hudson.model.JDK\\jdk21\\jdk-21+35'
-        PATH = "${env.JAVA_HOME}\\bin;${env.PATH}"
     }
 
     stages {
@@ -21,6 +16,11 @@ pipeline {
 
         stage('Verify Tools') {
             steps {
+                script {
+                    def jdkHome = tool 'jdk21'
+                    env.JAVA_HOME = jdkHome
+                    env.PATH = "${jdkHome}\\bin;${env.PATH}"
+                }
                 bat '''
                 echo JAVA_HOME=%JAVA_HOME%
                 java -version
