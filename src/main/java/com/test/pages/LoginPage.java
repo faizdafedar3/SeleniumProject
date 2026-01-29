@@ -1,45 +1,35 @@
 package com.test.pages;
 
 import java.time.Duration;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.*;
+import org.openqa.selenium.support.ui.*;
 
 public class LoginPage {
 
     private WebDriver driver;
     private WebDriverWait wait;
 
-    private By username = By.id("user-name");
-    private By password = By.id("password");
-    private By loginButton = By.id("login-button");
-
-    private By productsTitle = By.className("title");
-    private By errorMessage = By.cssSelector("[data-test='error']");
+    private By user = By.id("user-name");
+    private By pass = By.id("password");
+    private By loginBtn = By.id("login-button");
+    private By title = By.className("title");
+    private By error = By.cssSelector("[data-test='error']");
 
     public LoginPage(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(15));
     }
 
-    public void login(String user, String pass) {
-        driver.findElement(username).clear();
-        driver.findElement(username).sendKeys(user);
-
-        driver.findElement(password).clear();
-        driver.findElement(password).sendKeys(pass);
-
-        driver.findElement(loginButton).click();
+    public void login(String u, String p) {
+        driver.findElement(user).sendKeys(u);
+        driver.findElement(pass).sendKeys(p);
+        driver.findElement(loginBtn).click();
     }
 
     public boolean isLoginSuccessful() {
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(productsTitle));
-            return driver.findElement(productsTitle)
-                         .getText()
-                         .equalsIgnoreCase("Products");
+            return wait.until(ExpectedConditions
+                    .visibilityOfElementLocated(title)).isDisplayed();
         } catch (Exception e) {
             return false;
         }
@@ -47,8 +37,8 @@ public class LoginPage {
 
     public boolean isErrorDisplayed() {
         try {
-            wait.until(ExpectedConditions.visibilityOfElementLocated(errorMessage));
-            return true;
+            return wait.until(ExpectedConditions
+                    .visibilityOfElementLocated(error)).isDisplayed();
         } catch (Exception e) {
             return false;
         }

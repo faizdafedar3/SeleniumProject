@@ -1,0 +1,51 @@
+package com.test.pages;
+
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.test.utils.DriverFactory;
+import com.test.utils.ExtentManager;
+import com.test.utils.ScreenshotUtil;
+
+public class BaseTest {
+
+    protected static ExtentReports extent;
+    protected static ThreadLocal<ExtentTest> extentTest = new ThreadLocal<>();
+
+    static {
+        extent = ExtentManager.getExtent();
+    }
+
+    protected void createTest(String testName) {
+        extentTest.set(extent.createTest(testName));
+    }
+
+    protected ExtentTest getTest() {
+        return extentTest.get();
+    }
+
+    @AfterMethod(alwaysRun = true)
+    public void captureResult(ITestResult result) {
+
+        if (result.getStatus() == ITestResult.FAILURE) {
+
+            String screenshotPath = ScreenshotUtil.takeScreenshot(
+                    DriverFactory.getDriver(),
+                    result.getMethod().getMethodName()
+            );
+
+            getTest().fail(result.getThrowable());
+            getTest().addScreenCaptureFromPath(screenshotPath);
+        }
+
+        DriverFactory.quitDriver();
+    }
+
+    @AfterSuite
+    public void tearDownReport() {
+        extent.flush();
+    }
+}
