@@ -10,7 +10,11 @@ public class DriverFactory {
     private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
 
     public static void setDriver() {
-        WebDriverManager.chromedriver().setup();
+
+        WebDriverManager.chromedriver()
+                        .clearDriverCache()
+                        .setup();
+
         driver.set(new ChromeDriver());
     }
 
